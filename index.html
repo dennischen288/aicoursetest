@@ -17,22 +17,16 @@
 .hero-street{isolation:isolate;padding-bottom:100px}
 .street-scene{position:absolute;inset:auto 0 0;height:108px;overflow:hidden;pointer-events:none;background:linear-gradient(0deg,#20130de6,transparent);z-index:1}
 .street-scene::after{content:"";position:absolute;left:0;right:0;bottom:12px;height:1px;background:#f3bd8933}
-.street-person{position:absolute;left:0;bottom:14px;width:50px;height:86px;animation:street-cross var(--travel) linear infinite;animation-delay:var(--delay);will-change:transform}
+.street-person{position:absolute;left:0;bottom:14px;width:50px;height:86px;will-change:transform}
 .street-person.far{bottom:23px;opacity:.45;width:36px;height:64px;filter:blur(.3px)}
-.street-person.reverse{animation-direction:reverse}
-.street-person svg{width:100%;height:100%;overflow:visible;animation:street-bob var(--step) ease-in-out infinite}
-.street-person.reverse svg{scale:-1 1}
-.street-arm,.street-leg{transform-box:fill-box;transform-origin:50% 0;animation:street-stride var(--step) ease-in-out infinite alternate}
-.street-arm.back,.street-leg.front{animation-delay:calc(var(--step) * -1)}
+.street-person svg{width:100%;height:100%;overflow:visible}
+.street-person.reverse svg{transform:scaleX(-1)}
+.street-arm,.street-leg{transform-box:fill-box;transform-origin:50% 0}
 .street-controls{position:absolute;right:24px;bottom:113px;z-index:2;display:flex;align-items:center;gap:12px;color:#f2e6d8;font-size:11px;letter-spacing:.12em}
 .street-toggle{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid #f3bd8966;border-radius:999px;background:#20130d99;color:#fff;font:inherit;letter-spacing:normal;min-height:36px}
 .street-toggle:focus-visible{outline:2px solid #f3bd89;outline-offset:3px}
-.street-paused .street-person,.street-paused .street-person svg,.street-paused .street-arm,.street-paused .street-leg{animation-play-state:paused}
-@keyframes street-cross{from{transform:translateX(-70px)}to{transform:translateX(calc(100vw + 70px))}}
-@keyframes street-stride{from{rotate:-22deg}to{rotate:22deg}}
-@keyframes street-bob{0%,100%{translate:0 0}50%{translate:0 -2px}}
 @media(max-width:767px){.street-controls{right:20px;bottom:108px}.street-controls>span{display:none}.hero-street{padding-bottom:100px}}
-@media(prefers-reduced-motion:reduce){.street-person,.street-person svg,.street-arm,.street-leg{animation:none!important}.street-person{left:var(--rest);transform:none}.street-toggle{display:none}}
+
 </style>
 </head>
 <body>
@@ -107,13 +101,44 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!$('#privacyLaye
 $('#year').textContent=new Date().getFullYear();renderMenu();renderStore(0);updateBadge();lucide.createIcons();
 </script>
 <script>
-const streetToggle=document.getElementById('streetToggle');
-streetToggle.addEventListener('click',()=>{
-  const paused=document.querySelector('.hero-street').classList.toggle('street-paused');
-  streetToggle.setAttribute('aria-pressed',String(paused));
-  streetToggle.setAttribute('aria-label',paused?'播放人群動畫':'暫停人群動畫');
-  streetToggle.textContent=paused?'播放動畫':'暫停動畫';
-});
+(()=>{
+  const toggle=document.getElementById('streetToggle');
+  const scene=document.querySelector('.street-scene');
+  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+  const people=Array.from(scene.querySelectorAll('.street-person'),(el,index)=>({
+    el, svg:el.querySelector('svg'), limbs:Array.from(el.querySelectorAll('.street-arm,.street-leg')),
+    duration:parseFloat(el.style.getPropertyValue('--travel'))*1000,
+    phase:parseFloat(el.style.getPropertyValue('--rest'))/100,
+    step:parseFloat(el.style.getPropertyValue('--step'))*2000,
+    reverse:el.classList.contains('reverse'), index
+  }));
+  let paused=false,elapsed=0,lastTime=null,width=scene.clientWidth;
+  window.addEventListener('resize',()=>{width=scene.clientWidth;});
+  toggle.addEventListener('click',()=>{
+    paused=!paused;
+    toggle.setAttribute('aria-pressed',String(paused));
+    toggle.setAttribute('aria-label',paused?'播放人群動畫':'暫停人群動畫');
+    toggle.textContent=paused?'播放動畫':'暫停動畫';
+  });
+  function render(now){
+    const delta=lastTime===null?0:Math.min(now-lastTime,64);
+    lastTime=now;
+    if(!paused&&!document.hidden)elapsed+=delta;
+    for(const person of people){
+      const progress=(person.phase+elapsed/(person.duration*(reduced.matches?2:1)))%1;
+      const x=(person.reverse?1-progress:progress)*(width+140)-70;
+      person.el.style.transform=`translate3d(${x}px,0,0)`;
+      const stride=reduced.matches?0:Math.sin(elapsed/person.step*Math.PI*2+person.index);
+      person.svg.style.transform=`translateY(${-Math.abs(stride)*2}px) scaleX(${person.reverse?-1:1})`;
+      for(const limb of person.limbs){
+        const opposite=limb.classList.contains('back')!==limb.classList.contains('street-leg');
+        limb.style.transform=`rotate(${stride*22*(opposite?-1:1)}deg)`;
+      }
+    }
+    requestAnimationFrame(render);
+  }
+  requestAnimationFrame(render);
+})();
 </script>
 </body>
 </html>
