@@ -1,4 +1,4 @@
-const VERSION='zhijiao-pwa-v3-frontend';
+const VERSION='zhijiao-pwa-v4-frontend';
 const CORE=VERSION+'-core',MEDIA=VERSION+'-media';
 const BASE=new URL('./',self.location.href);
 const FILES=['./','./index.html','./crowd3d.css','./crowd3d.js','./pwa.js','./vendor/styles.css','./vendor/lucide.min.js','./manifest.webmanifest','./offline.html','./icons/icon-192.png','./icons/icon-512.png','./icons/icon-maskable-512.png','./icons/apple-touch-icon.png','./icons/favicon.png'];
