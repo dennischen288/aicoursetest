@@ -1,7 +1,7 @@
-const VERSION='zhijiao-pwa-v1';
+const VERSION='zhijiao-pwa-v2-orders';
 const CORE=VERSION+'-core',MEDIA=VERSION+'-media';
 const BASE=new URL('./',self.location.href);
-const FILES=['./','./index.html','./crowd3d.css','./crowd3d.js','./pwa.js','./vendor/styles.css','./vendor/lucide.min.js','./manifest.webmanifest','./offline.html','./icons/icon-192.png','./icons/icon-512.png','./icons/icon-maskable-512.png','./icons/apple-touch-icon.png','./icons/favicon.png'];
+const FILES=['./','./index.html','./crowd3d.css','./crowd3d.js','./pwa.js','./checkout-config.js','./checkout-api.js','./vendor/styles.css','./vendor/lucide.min.js','./manifest.webmanifest','./offline.html','./icons/icon-192.png','./icons/icon-512.png','./icons/icon-maskable-512.png','./icons/apple-touch-icon.png','./icons/favicon.png'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CORE).then(cache=>cache.addAll(FILES.map(path=>new URL(path,BASE).href)))));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{
   const keys=await caches.keys();await Promise.all(keys.filter(key=>key.startsWith('zhijiao-pwa-')&&![CORE,MEDIA].includes(key)).map(key=>caches.delete(key)));
