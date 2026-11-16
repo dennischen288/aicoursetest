@@ -1,0 +1,19 @@
+/* Real CSS 3D geometry: six faces per solid, no external rendering dependency. */
+.hero-street{isolation:isolate;padding-bottom:290px}
+.street-scene{position:absolute;inset:auto 0 0;height:290px;overflow:hidden;pointer-events:none;background:linear-gradient(0deg,#241b16f5,#241b1666 80%,transparent);z-index:1;perspective:1100px}
+.street-world{position:absolute;left:50%;bottom:8px;width:900px;height:270px;transform-style:preserve-3d;transform-origin:50% 100%}
+.street-world *{transform-style:preserve-3d}
+.street-solid{position:absolute;left:0;top:0}
+.street-face{position:absolute;left:0;top:0;background:var(--solid-color);backface-visibility:hidden;border:1px solid #0000000a}
+.street-face.front{filter:brightness(1.05)}.street-face.back{filter:brightness(.65)}.street-face.left{filter:brightness(.72)}.street-face.right{filter:brightness(.83)}.street-face.top{filter:brightness(1.2)}.street-face.bottom{filter:brightness(.55)}
+.street-actor{position:absolute;left:0;top:0;will-change:transform}
+.street-limb{position:absolute;left:0;top:0;transform-origin:0 0}
+.street-shadow{position:absolute;width:42px;height:22px;border-radius:50%;background:#130e0966;filter:blur(3px);transform:translate3d(-21px,69px,0) rotateX(90deg)}
+.street-sign{position:absolute;left:371px;top:82px;width:158px;text-align:center;color:#ffe3a7;font-family:'Noto Serif TC',serif;font-weight:700;font-size:22px;letter-spacing:8px;transform:translateZ(-31px);text-shadow:0 0 12px #ffb45788}
+.street-sign small{display:block;font-family:inherit;font-size:8px;letter-spacing:4px;margin-top:1px}
+.street-window{position:absolute;left:323px;top:140px;width:73px;height:60px;transform:translateZ(-30px);background:linear-gradient(125deg,#fbdba8,#a76934);border:5px solid #67432b;box-shadow:inset 0 0 14px #ffdfa166}
+.street-window::after{content:'';position:absolute;left:50%;top:0;height:100%;border-left:3px solid #67432b}
+.street-door{position:absolute;left:414px;top:120px;width:72px;height:126px;transform:translateZ(-139px);background:linear-gradient(#e8ad61,#8c4b24);box-shadow:0 0 28px #e9b16755}
+.street-controls{position:absolute;right:24px;bottom:284px;z-index:2;display:flex;align-items:center;gap:12px;color:#f2e6d8;font-size:11px;letter-spacing:.12em}
+.street-toggle{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid #f3bd8966;border-radius:999px;background:#20130d99;color:#fff;font:inherit;letter-spacing:normal;min-height:36px}.street-toggle:focus-visible{outline:2px solid #f3bd89;outline-offset:3px}
+@media(max-width:767px){.hero-street{padding-bottom:235px}.street-scene{height:235px}.street-controls{right:20px;bottom:225px}.street-controls>span{display:none}}
