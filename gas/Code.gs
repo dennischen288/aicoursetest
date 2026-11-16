@@ -86,9 +86,9 @@ function setup() {
     products.getRange(2, 4, DEFAULT_PRODUCTS.length, 1).setValues(DEFAULT_PRODUCTS.map(function (p) { return [p[3]]; }));
   }
 
-  if (!props_().getProperty('ORDERS_ENABLED')) props_().setProperty('ORDERS_ENABLED', 'true');
+  props_().setProperty('ORDERS_ENABLED', 'true'); // 初始化即開始接單（覆蓋舊版程式留下的設定）
   SpreadsheetApp.flush();
-  toast_('工作表已就緒，接下來請部署為網頁應用程式。');
+  toast_('工作表已就緒並已開始接單，接下來請部署新版本。');
 }
 
 function enableOrders() { props_().setProperty('ORDERS_ENABLED', 'true'); toast_('已開始接單'); }
